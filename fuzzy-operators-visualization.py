@@ -1,113 +1,37 @@
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import numpy as np
 
-
-# Intersection
-
-def average(x, y):
-    return (x + y) / 2
-
-
-def product(x, y):
-    return x * y
-
-
-def limited_difference(x, y):
-    return max(0, x + y - 1)
-
-
-def drastic_intersection(x, y):
-    if y == 1:
-        return x
-    elif x == 1:
-        return y
-    else:
-        return 0
-
-
-# Union
-
-def average_2(x, y):
-    return (2 * min(x, y) + 4 * max(x, y)) / 6
-
-
-def algebraic_sum(x, y):
-    return x + y - x * y
-
-
-def boundary_sum(x, y):
-    return min(1, x + y)
-
-
-def drastic_union(x, y):
-    if y == 0:
-        return x
-    elif x == 0:
-        return y
-    else:
-        return 1
-
-
-# Inference
-
-def gaines(x, y):
-    return 1 if x <= y else 0
-
-
-def godel(x, y):
-    return 1 if x <= y else y
-
-
-def goguen(x, y):
-    return 1 if x <= y else y / x
-
-
-def kleene(x, y):
-    return max(1 - x, y)
-
-
-def reichenbach(x, y):
-    return 1 - x + x * y
-
-
-def klir_yuan(x, y):
-    return 1 - x + (x ** 2) * y
-
-
-def zadeh(x, y):
-    return max(1 - x, min(x, y))
-
-
-def lukasiewicz(x, y):
-    return min(1, 1 - x + y)
+# Number of tiles per axis
+TILES = 20
+# Colormap reference at https://matplotlib.org/users/colormaps.html#grayscale-conversion
+COLOR_MAP = 'jet'
 
 
 modes = (
     ('Intersection', (
-        ('Minimum', min),
-        ('Average', average),
-        ('Product', product),
-        ('Limited difference', limited_difference),
-        ('Drastic intersection', drastic_intersection),
+        ('Minimum', 'min(x, y)'),
+        ('Average', '(x + y)/2'),
+        ('Product', 'x * y'),
+        ('Limited difference', 'max(0, x + y - 1)'),
+        ('Drastic intersection', 'x if y == 1 else y if x == 1 else 0'),
     )),
     ('Union', (
-        ('Maximum', max),
-        ('Average', average_2),
-        ('Algebraic sum', algebraic_sum),
-        ('Boundary sum', boundary_sum),
-        ('Drastic union', drastic_union),
+        ('Maximum', 'max(x, y)'),
+        ('Average', '(2*min(x, y) + 4*max(x, y))/6'),
+        ('Algebraic sum', 'x + y - x*y'),
+        ('Boundary sum', 'min(1, x + y)'),
+        ('Drastic union', 'x if y == 0 else y if x == 0 else 1'),
     )),
     ('Inference', (
-        ('Gaines', gaines),
-        ('Godel', godel),
-        ('Goguen', goguen),
-        ('Kleene', kleene),
-        ('Reichenbach', reichenbach),
-        ('Klir-Yuan', klir_yuan),
-        ('Zadeh', zadeh),
-        ('Lukasiewicz', lukasiewicz),
+        ('Gaines', '1 if x <= y else 0'),
+        ('Godel', '1 if x <= y else y'),
+        ('Goguen', '1 if x <= y else y/x'),
+        ('Kleene', 'max(1 - x, y)'),
+        ('Reichenbach', '1 - x + x*y'),
+        ('Klir-Yuan', '1 - x + (x**2) * y'),
+        ('Zadeh', 'max(1 - x, min(x, y))'),
+        ('Lukasiewicz', 'min(1, 1 - x + y)'),
     )),
 )
 
@@ -118,21 +42,20 @@ for mode in modes:
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         fig.canvas.set_window_title('{}: {}'.format(mode[0], fun[0]))
-        ax.set_title('{}: {}'.format(mode[0], fun[0]))
+        ax.set_title('{}: {} [{}]'.format(mode[0], fun[0], fun[1]))
 
         if mode[0] != 'Inference':
             plt.gca().invert_xaxis()
 
-        # Make data (from 0 to 1 in 20 steps)
-        X = np.linspace(0, 1, 20)
-        Y = np.linspace(0, 1, 20)
+        # Make data (from 0 to 1 in TILES steps)
+        X = np.linspace(0, 1, TILES)
+        Y = np.linspace(0, 1, TILES)
         X, Y = np.meshgrid(X, Y)
-        zs = np.array([fun[1](x, y) for x, y in zip(np.ravel(X), np.ravel(Y))])
+        zs = np.array([eval(fun[1]) for x, y in zip(np.ravel(X), np.ravel(Y))])
         Z = zs.reshape(X.shape)
 
         # Plot the surface.
-        # Colormap from https://matplotlib.org/users/colormaps.html#grayscale-conversion
-        surf = ax.plot_surface(X, Y, Z, cmap=cm.jet)
+        surf = ax.plot_surface(X, Y, Z, cmap=COLOR_MAP)
 
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
@@ -140,6 +63,5 @@ for mode in modes:
 
         # To generate the images
         # fig.savefig('images/{}_{}.png'.format(mode[0].lower(), fun[0].lower().replace(' ', '_')))
-        # print('{} - images/{}_{}.png'.format(fun[0], mode[0].lower(), fun[0].lower().replace(' ', '_')))
 
 plt.show()
