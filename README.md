@@ -12,21 +12,32 @@ The two values that can be easily adjusted in the code are `TILES` and `COLOR_MA
 - Possible values to assign to `COLOR_MAP` can be found in this 
 [colormap reference](https://matplotlib.org/users/colormaps.html#grayscale-conversion).
 
-## Intersection
+#### Truth table
+
+x | y | x AND y | x OR y | IF x THEN y
+:---: | :---: | :---: | :---: | :---:
+0 | 0 | 0 | 0 | 1
+0 | 1 | 0 | 1 | 1
+1 | 0 | 0 | 1 | 0 
+1 | 1 | 1 | 1 | 1
+
+## Intersection (x AND y)
 ![Minimum](images/intersection_minimum.png)
 ![Average](images/intersection_average.png)
 ![Product](images/intersection_product.png)
 ![Limited difference](images/intersection_limited_difference.png)
 ![Drastic intersection](images/intersection_drastic_intersection.png)
 
-## Union
+## Union (x OR y)
 ![Maximum](images/union_maximum.png)
 ![Average](images/union_average.png)
 ![Algebraic sum](images/union_algebraic_sum.png)
 ![Boundary sum](images/union_boundary_sum.png)
 ![Drastic union](images/union_drastic_union.png)
 
-## Inference
+## Inference (IF x THEN y)
+Note that the range values for `x` are inverted compared to Intersection and Union 
+to make it easier to see the surface.
 ![Gaines](images/inference_gaines.png)
 ![Godel](images/inference_godel.png)
 ![Goguen](images/inference_goguen.png)
