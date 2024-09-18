@@ -1,12 +1,12 @@
-from mpl_toolkits.mplot3d import Axes3D
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Number of tiles per axis
 TILES = 20
-# Colormap reference at https://matplotlib.org/users/colormaps.html#grayscale-conversion
-COLOR_MAP = 'jet'
-
+# Colormap reference at https://matplotlib.org/stable/users/explain/colors/colormaps.html
+COLOR_MAP = 'turbo'
+SAVE_IMAGES = False
+SHOW_IMAGES = True
 
 modes = (
     ('Intersection', (
@@ -40,8 +40,8 @@ for mode in modes:
 
     for fun in functions:
         fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        fig.canvas.set_window_title('{}: {}'.format(mode[0], fun[0]))
+        ax = fig.add_subplot(projection='3d')
+        fig.canvas.manager.set_window_title('{}: {}'.format(mode[0], fun[0]))
         ax.set_title('{}: {} [{}]'.format(mode[0], fun[0], fun[1]))
 
         if mode[0] != 'Inference':
@@ -62,6 +62,10 @@ for mode in modes:
         ax.set_zlabel('Z')
 
         # To generate the images
-        # fig.savefig('images/{}_{}.png'.format(mode[0].lower(), fun[0].lower().replace(' ', '_')))
+        if SAVE_IMAGES:
+            fig.savefig('images/{}_{}.png'.format(mode[0].lower(), fun[0].lower().replace(' ', '_')))
+            if not SHOW_IMAGES:
+                matplotlib.pyplot.close()
 
-plt.show()
+if SHOW_IMAGES:
+    plt.show()
